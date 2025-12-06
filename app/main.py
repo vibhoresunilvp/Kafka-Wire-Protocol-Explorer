@@ -15,7 +15,7 @@ def main():
     print(data)
     message_val = len(data).to_bytes(4, byteorder="big")
     correlation_val = correlation_id.to_bytes(4, byteorder="big")
-    data = message_val+b'\n'+correlation_val
+    data = message_val+correlation_val
     print(data.hex())
     connection.sendall(data)
 
