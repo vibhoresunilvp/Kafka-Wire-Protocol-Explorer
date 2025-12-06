@@ -9,7 +9,15 @@ def main():
     # Uncomment this to pass the first stage
     
     server = socket.create_server(("localhost", 9092), reuse_port=True)
-    server.accept() # wait for client
+    connection, address = server.accept() # wait for client
+    data = connection.recv(1024)
+    correlation_id = 7
+    print(data)
+    message_val = len(data).to_bytes(4, byteorder="big")
+    correlation_val = correlation_id.to_bytes(4, byteorder="big")
+    data = message_val+b'\n'+correlation_val
+    print(data.hex())
+    connection.sendall(data)
 
 
 if __name__ == "__main__":
