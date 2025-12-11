@@ -21,3 +21,4 @@ This is not a full Kafka clone. Instead, it’s a **learning-focused micro-broke
 ## 📂 Project Overview
 
 The core implementation lives in:
+    📂 app -> main.py
