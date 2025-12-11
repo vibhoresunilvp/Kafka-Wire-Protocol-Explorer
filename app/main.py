@@ -1,5 +1,19 @@
 import socket  # noqa: F401
 
+# Task 4: Handle ApiVersions requests
+
+# Request Header (v2)
+#     [0, 4] -> message size
+#     [4, 6] -> Api key
+#     [6, 8] -> api version
+#     [8, 12] -> correlation id
+#     [12, 14] -> client id length
+#     [14, 23] -> client id contents
+#     [23, 24] -> tag buffer
+
+
+
+
 def parse_response(data) -> bytes:
     correlation_id = data[8:12]
     api_version = data[6:8]
