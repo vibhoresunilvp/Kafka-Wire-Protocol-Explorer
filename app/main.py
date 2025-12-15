@@ -15,20 +15,36 @@ import socket  # noqa: F401
 
 
 def parse_response(data) -> bytes:
+    # 1. Extract correlation_id
     correlation_id = data[8:12]
-    api_version = data[6:8]
-    error_code = 35
-    api_version_hex = int.from_bytes(api_version, "big")
-    print(f"api_version: {api_version_hex}")
-    if(0 <= api_version_hex <= 4):
-        error_code = 0
-    error_code = error_code.to_bytes(2, "big")
-    print(f"error_code: {int.from_bytes(error_code, "big")}")
-    print(f"correlation_id: {int.from_bytes(correlation_id, "big")}")
-    print(f"error_code: {int.from_bytes(error_code, "big")}")
 
-    message_size = (0).to_bytes(4, byteorder="big")
-    return message_size+correlation_id+error_code+message_size
+    # 2. Response body
+    error_code = (0).to_bytes(2, "big")
+
+    api_keys_array_len = b"\x02"          # 1 element → 1 + 1
+    api_key = (18).to_bytes(2, "big")
+    min_version = (0).to_bytes(2, "big")
+    max_version = (4).to_bytes(2, "big")
+    api_key_tag_buffer = b"\x00"
+
+    throttle_time_ms = (0).to_bytes(4, "big")
+    response_tag_buffer = b"\x00"
+
+    body = (
+        error_code +
+        api_keys_array_len +
+        api_key +
+        min_version +
+        max_version +
+        api_key_tag_buffer +
+        throttle_time_ms +
+        response_tag_buffer
+    )
+
+    # 3. message_size = header + body
+    message_size = (len(correlation_id) + len(body)).to_bytes(4, "big")
+
+    return message_size + correlation_id + body
 
 def main():
     print("Logs from your program will appear here!")
